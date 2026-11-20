@@ -58,8 +58,8 @@ summary(buildings$Year_Built)
 
 buildings$Stratum <- cut(
   buildings$Year_Built,
-  breaks = c(-Inf, 1920, 1990, Inf),
-  labels = c("Before 1920", "1920-1989", "1990 or later"),
+  breaks = c(-Inf, 1920, 1992, Inf),
+  labels = c("Before 1920", "1920-1991", "1992 or later"),
   right = FALSE
 )
 
@@ -107,4 +107,36 @@ allocation_table <- data.frame(
 )
 
 print(allocation_table)
+
+set.seed(123)
+
+# Assign unique IDs to all 33 buildings
+buildings$Building_ID <- 1:nrow(buildings)
+
+# Stratum 1: Before 1920 (select 5 buildings)
+stratum1 <- subset(buildings, Stratum == "Before 1920")
+sample1 <- stratum1[sample(nrow(stratum1), 5, replace = FALSE), ]
+
+# Stratum 2: 1920-1989 (select 3 buildings)
+stratum2 <- subset(buildings, Stratum == "1920-1991")
+sample2 <- stratum2[sample(nrow(stratum2), 3, replace = FALSE), ]
+
+# Stratum 3: 1990 or later (select 2 buildings)
+stratum3 <- subset(buildings, Stratum == "1992 or later")
+sample3 <- stratum3[sample(nrow(stratum3), 2, replace = FALSE), ]
+
+# Combine all sampled buildings
+final_sample <- rbind(sample1, sample2, sample3)
+
+# Display selected buildings
+print(final_sample[, c("Building_ID", "Building_Name",
+                       "Year_Built", "Stratum")])
+
+# Verify sample sizes in each stratum
+table(final_sample$Stratum)
+
+# Verify total sample size = 10
+nrow(final_sample)
+
+
 
